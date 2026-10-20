@@ -41,6 +41,7 @@ When changing the biography, also update the title, description, Open Graph/Twit
 - For each new paper, verify the complete title, author order, venue, year, publication status, and DOI or official record. Highlight Hongrui Yi in the author list.
 - Separate journal articles, conference papers, accepted presentations, and explicitly authorized preprints/manuscripts. Acceptance of an abstract is not publication of a paper.
 - The two existing citations are retained with the owner's permission; independent metadata verification remains pending. See `docs/REVIEW.md` before adding new entries.
+- The featured 2025 SPIE paper, Scholar URL, and lab-publications URL were supplied explicitly by the owner for use despite blocked external access. Their provenance and remaining checks are in `docs/CONTENT_REFINEMENT.md`; do not describe them as independently verified in this environment.
 - There is intentionally no CV link. Add one only if an actual, public, current PDF is provided and checked.
 - Do not relabel earlier publication figures as OCT research images. Retain provenance and meaningful alt text for every image.
 

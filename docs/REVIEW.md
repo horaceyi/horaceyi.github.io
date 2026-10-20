@@ -1,5 +1,7 @@
 # Redesign review — October 2026
 
+For the subsequent research refinements, owner-supplied 2025 SPIE citation, profile links, and remaining figure/publication checks, see [CONTENT_REFINEMENT.md](CONTENT_REFINEMENT.md).
+
 For the subsequent Index-file preview diagnosis, hero-name correction, and fresh browser evidence, see [RENDERING_FIX.md](RENDERING_FIX.md).
 
 Prepared on the local branch `redesign/academic-portfolio`, based on `c055261`. No remote push, pull request, merge, production-branch change, domain change, or deployment has been performed. This document is excluded from the default GitHub Pages build by `_config.yml`.
