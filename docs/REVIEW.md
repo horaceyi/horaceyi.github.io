@@ -1,5 +1,7 @@
 # Redesign review — October 2026
 
+For the final second-author SPIE addition, release checks, and remaining source/API access prerequisites, see [FINAL_REVIEW.md](FINAL_REVIEW.md).
+
 For the subsequent research refinements, owner-supplied 2025 SPIE citation, profile links, and remaining figure/publication checks, see [CONTENT_REFINEMENT.md](CONTENT_REFINEMENT.md).
 
 For the subsequent Index-file preview diagnosis, hero-name correction, and fresh browser evidence, see [RENDERING_FIX.md](RENDERING_FIX.md).
