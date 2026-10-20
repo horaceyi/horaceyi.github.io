@@ -1,5 +1,7 @@
 # Redesign review — October 2026
 
+For the subsequent featured IEEE TBME 2026 addition and its fourth-author attribution, see [TBME_2026_UPDATE.md](TBME_2026_UPDATE.md).
+
 For the final second-author SPIE addition, release checks, and remaining source/API access prerequisites, see [FINAL_REVIEW.md](FINAL_REVIEW.md).
 
 For the subsequent research refinements, owner-supplied 2025 SPIE citation, profile links, and remaining figure/publication checks, see [CONTENT_REFINEMENT.md](CONTENT_REFINEMENT.md).
