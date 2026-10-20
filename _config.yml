@@ -1,0 +1,9 @@
+# GitHub Pages' default Jekyll build copies the static site without a custom build.
+# Keep maintenance documents, validation tools, and unused legacy generators out
+# of the generated site. Preserve these exclusions if changing the workflow.
+exclude:
+  - README.md
+  - docs
+  - scripts
+  - jemdoc.py
+  - jemdoc.css
