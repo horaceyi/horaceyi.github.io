@@ -288,19 +288,27 @@ details[open] > summary > span { transform: rotate(45deg); }
   .portrait { width: 100%; margin: 0; }
   h1 { font-size: 44pt; }
   .hero-statement { font-size: 19pt; }
-  .section-grid { grid-template-columns: 140px minmax(0, 1fr); gap: 20px; }
+  .section-grid { display: block; }
+  .section-label { margin-bottom: 16px; }
   .about-section, .research-section, .publication-section, .background-section { padding-block: 24px; }
-  .research-item { grid-template-columns: 24px minmax(0, 1fr); }
-  .research-intro { margin-top: 20px; padding-bottom: 20px; }
+  .research-item { display: block; padding-block: 16px; }
+  .research-index { display: none; }
+  .research-intro { display: block; margin-top: 20px; padding-bottom: 20px; }
+  .large-serif { font-size: 24pt; }
+  .research-intro > p:last-child { max-width: none; margin-top: 12px; }
+  .research-body h3 { font-size: 19pt; }
+  .publication { grid-template-columns: 170px minmax(0, 1fr); gap: 20px; }
+  .education-heading { flex-direction: row; }
+  .education-list li { padding-block: 12px; }
   .publication, .education-list li, .research-item { break-inside: avoid; }
   .section-heading, .section-label, .list-heading, .publication-category { break-after: avoid; }
-  .research-intro, .earlier-experience { break-inside: avoid; }
-  .earlier-experience::details-content { content-visibility: visible; }
-  .earlier-experience summary > span { display: none; }
+  .research-intro { break-inside: avoid; }
+  .earlier-experience { display: none; }
   .contact-section { background: white; color: #222; border-top: 1px solid #999; padding-block: 24px; }
   .contact-section h2, .contact-section a, .contact-section .eyebrow, .contact-section .contact-links > p, .contact-section .icon { color: #222; }
   .contact-section :is(h2, .email-link) { font-size: 24pt; }
-  .contact-inner { flex-direction: row; }
+  .contact-inner { display: block; }
+  .contact-links { margin-top: 18px; }
   .email-link { border-color: #999; }
 }
 
