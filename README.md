@@ -13,6 +13,8 @@ python3 -m http.server 8000 --bind 127.0.0.1
 
 Use local HTTP requests or a browser in your development environment to inspect the site. The server must be started again in a new task; running processes do not survive snapshots.
 
+Open the HTTP-served site for visual review. A Codex file preview labeled “Index” may render the HTML without its sibling stylesheet, fonts, or images; that is not the same as serving this directory. Keep `index.html`, `red.css`, and `assets/` together. Relative URLs intentionally support both the site root and a containing directory. Do not rewrite working asset paths just to accommodate an isolated file preview.
+
 ## Files and editing
 
 | File | Purpose |
@@ -62,7 +64,7 @@ Optional browser verification (requires `playwright` for Python and Chromium, al
 python3 scripts/check_browser.py --output /tmp/horace-site-review
 ```
 
-It verifies layout from 320px to 1440px, image loading, keyboard behavior, navigation destinations, a 200% zoom-equivalent viewport, reduced motion, and print rendering. It saves desktop/mobile screenshots outside the checkout. To include an axe accessibility scan, supply a locally installed `axe-core/axe.min.js` with `--axe /path/to/axe.min.js`. Development-only tools can be installed outside the repository:
+It verifies applied stylesheet rules, decoded images, loaded fonts, resource MIME types, console/network errors, layout from 320px to 1440px, keyboard behavior, navigation destinations, a 200% zoom-equivalent viewport, reduced motion, and print rendering. The exact English hero name and separate Chinese name are checked as rendered DOM text. It saves screenshots plus network/rendering evidence outside the checkout. To include an axe accessibility scan, supply a locally installed `axe-core/axe.min.js` with `--axe /path/to/axe.min.js`. Development-only tools can be installed outside the repository:
 
 ```sh
 npm install --prefix /tmp/horace-tools --no-audit --no-fund axe-core@4.14.0 html-validate@11.16.4

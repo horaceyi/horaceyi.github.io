@@ -59,9 +59,10 @@ nav a span { margin-left: 4px; }
 .hero .eyebrow { display: flex; align-items: center; gap: 12px; margin-bottom: 26px; }
 .small-rule { width: 25px; height: 1px; background: var(--blue); }
 h1 { font-family: var(--serif); font-size: clamp(64px, 6.4vw, 84px); font-weight: 400; letter-spacing: -.04em; line-height: 1.06; }
+.name-ending { white-space: nowrap; }
+.nickname { font-size: .65em; letter-spacing: -.02em; }
 .alternate-name { display: flex; align-items: baseline; gap: 10px; font-family: var(--sans); font-size: 13px; font-weight: 500; letter-spacing: .02em; color: var(--muted); margin-top: 12px; line-height: 1.6; }
-.alternate-name [lang] { font-size: 14px; letter-spacing: .1em; }
-.alternate-name > span[aria-hidden] { color: #78868e; }
+.alternate-name[lang] { font-size: 14px; letter-spacing: .1em; }
 .hero-position { font-size: 13px; margin-top: 25px; line-height: 1.9; }
 .hero-position a { font-weight: 650; text-decoration: none; }
 .hero-position a:hover { text-decoration: underline; }
@@ -216,7 +217,7 @@ details[open] > summary > span { transform: rotate(45deg); }
   nav a { font-size: 11px; min-height: 44px; }
   .hero { grid-template-columns: 1fr; gap: 0; padding-top: 42px; }
   .hero .eyebrow { font-size: 9px; letter-spacing: .1em; margin-bottom: 24px; }
-  .hero h1 { font-size: clamp(58px, 15vw, 76px); }
+  .hero h1 { font-size: clamp(38px, 11.8vw, 64px); }
   .alternate-name { font-size: 12px; margin-top: 9px; }
   .hero-position { font-size: 12px; margin-top: 22px; }
   .hero-statement { font-size: 28px; margin-top: 25px; }

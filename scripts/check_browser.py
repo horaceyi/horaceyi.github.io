@@ -11,6 +11,39 @@ from threading import Thread
 from check_site import ROOT, QuietHandler
 
 
+def check_rendering(page, name):
+    """Reject unstyled HTML and decoded-image failures, including HTTP 200 fallbacks."""
+    state = page.evaluate('''() => ({
+      heading: document.querySelector('h1').textContent.trim(),
+      chineseName: document.querySelector('.alternate-name').textContent.trim(),
+      heroDisplay: getComputedStyle(document.querySelector('.hero')).display,
+      navDisplay: getComputedStyle(document.querySelector('nav')).display,
+      stylesheets: [...document.styleSheets].map(s => ({
+        href: s.href,
+        rules: (() => { try { return s.cssRules.length; } catch { return 0; } })()
+      })),
+      fonts: [...document.fonts].map(f => ({family: f.family, status: f.status})),
+      images: [...document.images].map(i => ({
+        src: i.currentSrc, complete: i.complete, naturalWidth: i.naturalWidth
+      }))
+    })''')
+    assert state['heading'] == 'Hongrui (Horace) Yi', f'{name}: incorrect hero name'
+    assert state['chineseName'] == '易弘睿', f'{name}: Chinese name is not separate'
+    assert any(s['href'] and s['href'].endswith('/red.css') and s['rules'] > 0 for s in state['stylesheets']), f'{name}: stylesheet not applied'
+    assert state['heroDisplay'] == 'grid' and state['navDisplay'] == 'flex', f'{name}: layout styles missing'
+    assert all(any(f['family'] == family and f['status'] == 'loaded' for f in state['fonts']) for family in ['Manrope', 'Newsreader']), f'{name}: web fonts not loaded'
+    assert all(i['complete'] and i['naturalWidth'] > 0 for i in state['images']), f'{name}: image not decoded'
+    content = page.locator('.hero-content').bounding_box()
+    portrait = page.locator('.portrait').bounding_box()
+    if page.viewport_size['width'] > 600:
+        assert portrait['x'] >= content['x'] + content['width'], f'{name}: desktop/tablet portrait overlaps text'
+    else:
+        assert portrait['y'] >= content['y'] + content['height'], f'{name}: mobile portrait overlaps text'
+    links = [link.bounding_box() for link in page.locator('nav a').all()]
+    assert all(a['x'] + a['width'] < b['x'] for a, b in zip(links, links[1:])), f'{name}: navigation links crowded/overlapping'
+    return state
+
+
 def main():
     from playwright.sync_api import sync_playwright
 
@@ -50,9 +83,12 @@ def main():
             cases = [('desktop', 1440, 1000), ('small-desktop', 1024, 900), ('tablet', 768, 1024), ('zoom-equivalent', 720, 900), ('mobile', 390, 844), ('small-mobile', 320, 700)]
             for name, width, height in cases:
                 page = browser.new_page(viewport={'width': width, 'height': height}, reduced_motion='reduce')
-                errors, failed, external = [], [], []
+                errors, failed, external, network, console_errors, request_failures = [], [], [], [], [], []
                 page.on('pageerror', lambda e: errors.append(str(e)))
                 page.on('response', lambda r: failed.append(f'{r.status} {r.url}') if r.status >= 400 else None)
+                page.on('response', lambda r: network.append({'url': r.url, 'type': r.request.resource_type, 'status': r.status, 'content_type': r.headers.get('content-type', '')}))
+                page.on('console', lambda m: console_errors.append(m.text) if m.type == 'error' else None)
+                page.on('requestfailed', lambda r: request_failures.append({'url': r.url, 'error': r.failure}))
                 page.on('request', lambda r: external.append(r.url) if not r.url.startswith(origin) else None)
                 response = page.goto(origin, wait_until='networkidle')
                 assert response.status == 200
@@ -80,6 +116,13 @@ def main():
                 for img in page.locator('img').all():
                     img.scroll_into_view_if_needed()
                 page.wait_for_function('Array.from(document.images).every(i => i.complete && i.naturalWidth > 0)')
+                rendered = check_rendering(page, name)
+                for resource in network:
+                    kind = resource['type']
+                    if kind in ['stylesheet', 'image', 'font']:
+                        assert resource['status'] == 200, f'{name}: asset failed: {resource}'
+                        expected = {'stylesheet': ['text/css'], 'image': ['image/'], 'font': ['font/', 'application/font', 'application/x-font', 'application/octet-stream']}[kind]
+                        assert any(resource['content_type'].startswith(t) for t in expected), f'{name}: wrong asset MIME type: {resource}'
                 page.evaluate('window.scrollTo({top:0, behavior:"instant"})')
                 # Remove focus for editorial screenshots without changing page behavior.
                 page.evaluate('document.activeElement.blur()')
@@ -95,9 +138,9 @@ def main():
                 if name == 'desktop':
                     page.emulate_media(media='print')
                     page.pdf(path=str(output / 'print.pdf'), format='A4', print_background=True, margin={'top': '12mm', 'right': '12mm', 'bottom': '12mm', 'left': '12mm'})
-                assert not errors and not failed and not external, f'{name}: errors={errors}, failed={failed}, external={external}'
-                report['viewports'].append({'name': name, 'width': width, 'height': height, 'axe_passes': passed, 'errors': errors, 'failed_requests': failed, 'external_requests': external})
-                print(f'PASS: {name} ({width}px): layout, loaded images, keyboard, anchors, reduced motion' + (f', {passed} axe checks / 0 violations' if passed else ''))
+                assert not errors and not failed and not external and not console_errors and not request_failures, f'{name}: errors={errors}, failed={failed}, external={external}, console={console_errors}, request_failures={request_failures}'
+                report['viewports'].append({'name': name, 'width': width, 'height': height, 'axe_passes': passed, 'errors': errors, 'failed_requests': failed, 'external_requests': external, 'console_errors': console_errors, 'request_failures': request_failures, 'network': network, 'rendered': rendered})
+                print(f'PASS: {name} ({width}px): applied CSS/fonts, decoded images, layout, keyboard, anchors, reduced motion' + (f', {passed} axe checks / 0 violations' if passed else ''), flush=True)
                 page.close()
             page = browser.new_page(viewport={'width': 390, 'height': 844}, java_script_enabled=False, reduced_motion='reduce')
             page.goto(origin, wait_until='networkidle')
